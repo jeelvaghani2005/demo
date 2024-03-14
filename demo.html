@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <table border="1">
+    <thead>
+      <tr>
+        <th>reagion</th>
+      </tr>
+    </thead>
+    <tbody id="get">
+
+    </tbody>
+  </table>
+
+</body>
+<!-- 
+<script>
+
+  let data = []
+  
+    function viewdata() {
+      let tbl = ""
+      data[0].map((val) => {
+        tbl +=
+          `
+      <tr>
+        <td>${val.region}</td>
+        </tr>
+      `
+      })
+      document.getElementById('get').innerHTML = tbl
+    }
+
+  function demo() {
+    let tbl = ""
+    fetch('https://restcountries.com/v3.1/all')
+      .then(res => res.json())
+      .then(res => {
+        // data=res
+        data.push(res)
+        console.log(data[0],"data");
+        console.log(res,"res");
+        viewdata();
+      })
+      //   res.map((val) => {
+      //     data.push(val);
+      //     tbl +=
+      //       `
+      //   <tr>
+      //   <td>${val.region}</td>
+      //   </tr> 
+      //   `
+      //   })
+      //   document.getElementById('get').innerHTML = tbl
+      // })
+  }
+  demo();
+
+
+</script> -->
+
+
+<script>
+
+//   let arr=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15];
+//   let newarr=[]
+//   arr.map((val)=>{
+//     if(val%2==0){
+//       newarr.push(val)
+//     }
+//   })
+
+// console.log(newarr);
+
+let num=2;
+let check;
+for(let i=2;i<num;i++){
+  if(num%i==0){
+    check=1
+  }
+}
+console.log(check);
+if(check==0){
+  console.log("yes"); 
+}
+else{
+  console.log("no");
+}
+
+
+</script>
+
+
+
+</html> 
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+
+<body>
+
+  <table border="1">
+    <thead>
+      <tr>
+        <th>region</th>
+      </tr>
+    </thead>
+    <tbody id="get">
+
+    </tbody>
+  </table>
+
+  <script>
+
+    let data = [];
+
+    function viewdata() {
+      let tbl = "";
+      data.map((val) => {
+        tbl +=
+          `
+        <tr>
+          <td>${val.region}</td>
+        </tr>
+      `
+      })
+      document.getElementById('get').innerHTML = tbl
+    }
+    
+    function demo() {
+      fetch('https://restcountries.com/v3.1/all')
+      .then(res => res.json())
+      .then(res => {
+        data = res; 
+        // viewdata(); 
+        viewdata(); 
+        })
+    }
+
+    demo();
+
+  </script>
+
+</body> -->
+
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .past-appointment {
+            color: rgb(234, 11, 11);
+        }
+
+        .upcoming-appointment {
+            color: blue;
+        }
+
+        .running-appointment {
+            color: green;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div>
+        <div>
+            <input type="text" id="name" name="name">
+        </div>
+        <div>
+            <input type="email" id="email" name="email">
+        </div>
+        <div>
+            <input type="date" id="date" name="date">
+        </div>
+        <div>
+            <label for="">From</label>
+            <select name="" id="time-1">
+                <option value="08:00 AM">08:00 AM</option>
+                <option value="08:30 AM">08:30 AM</option>
+                <option value="09:00 AM">09:00 AM</option>
+                <option value="09:30 AM">09:30 AM</option>
+                <option value="10:00 AM">10:00 AM</option>
+                <option value="12:00 PM">12:00 PM</option>
+                <option value="12:00 PM">12:30 PM</option>
+                <option value="1:00 PM">1:00 PM</option>
+                <option value="2:00 PM">2:00 PM</option>
+            </select>
+        </div>
+        <div>
+            <label for="">To</label>
+            <select name="" id="time-2">
+                <option value="08:30 AM">08:30 AM</option>
+                <option value="09:00 AM">09:00 AM</option>
+                <option value="09:30 AM">09:30 AM</option>
+                <option value="10:00 AM">10:00 AM</option>
+                <option value="10:30 AM">10:30 AM</option>
+                <option value="12:30 PM">12:30 PM</option>
+                <option value="1:00 PM">1:00 PM</option>
+                <option value="1:30 PM">1:30 PM</option>
+                <option value="2:30 PM">2:30 PM</option>
+            </select>
+        </div>
+        <div>
+            <textarea name="" id="textarea" cols="30" rows="5"></textarea>
+        </div>
+        <button onclick="submitdata()">Submit</button>
+    </div>
+
+    <button onclick="filterdata()" >Show</button>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Message</th>
+            </tr>
+        </thead>
+        <tbody id="ans">
+
+        </tbody>
+    </table>
+
+
+    <script>
+
+        const data = []
+
+        function submitdata() {
+            let name = document.getElementById('name').value;
+            let email = document.getElementById('email').value;
+            let date = document.getElementById('date').value;
+            let time_1 = document.getElementById('time-1').value;
+            let time_2 = document.getElementById('time-2').value;
+            let textarea = document.getElementById('textarea').value;
+
+            let obj = ({
+                name: name,
+                email: email,
+                date: date,
+                time_1: time_1,
+                time_2: time_2,
+                textarea: textarea
+            })
+
+            if (localStorage.getItem('userdata') === null || localStorage.getItem('userdata') === undefined) {
+                data.push(obj)
+                localStorage.setItem("userdata", JSON.stringify(data))
+            }
+            else {
+                let val = JSON.parse(localStorage.getItem("userdata"));
+                val.push(obj);
+                localStorage.setItem('userdata', JSON.stringify(val));
+            }
+            // filterdata()
+        }
+
+        // function viewdata() {
+        //     let getdata = JSON.parse(localStorage.getItem("userdata"))
+        //     let tbl = ""
+        //     getdata.map((val) => {
+        //         tbl +=
+        //             `
+        //             <tr>
+        //                 <td>${val.name}</td>
+        //                 <td>${val.email}</td>
+        //                 <td>${val.date}</td>
+        //                 <td>${val.time_1}-${val.time_2}</td>
+        //                 <td>${val.textarea}</td>
+        //             </tr>
+        //         `
+        //     })
+        //     document.getElementById('ans').innerHTML = tbl
+        // }
+
+        function filterdata() {
+            let getdata = JSON.parse(localStorage.getItem('userdata'))
+            let now = new Date()
+            let tbl = ""
+            getdata.map((val) => {
+                let appointmentTime = new Date(val.date + ' ' + val.time_1);
+                let appointmentEndTime = new Date(val.date + ' ' + val.time_2);
+
+                if (now > appointmentEndTime) {
+                    tbl +=
+                        `<tr class="past-appointment">
+                            <td>${val.name}</td>
+                            <td>${val.email}</td>
+                            <td>${val.date}</td>
+                            <td>${val.time_1} - ${val.time_2}</td>
+                            <td>${val.textarea}</td>
+                        </tr>`;
+                } else if (now >= appointmentTime && now <= appointmentEndTime) {
+                    tbl +=
+                        `<tr class="running-appointment">
+                            <td>${val.name}</td>
+                            <td>${val.email}</td>
+                            <td>${val.date}</td>
+                            <td>${val.time_1} - ${val.time_2}</td>
+                            <td>${val.textarea}</td>
+                        </tr>`;
+                } else {
+                    tbl +=
+                        `<tr class="upcoming-appointment">
+                            <td>${val.name}</td>
+                            <td>${val.email}</td>
+                            <td>${val.date}</td>
+                            <td>${val.time_1} - ${val.time_2}</td>
+                            <td>${val.textarea}</td>
+                        </tr>`;
+                }
+            })
+            document.getElementById('ans').innerHTML = tbl
+        }
+
+    </script>
+
+</body>
+
+</html>

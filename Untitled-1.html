@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Country Dashboard</title>
+  <!-- Add Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <style>
+    table {
+      width: 100%;
+    }
+
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      cursor: pointer;
+    }
+
+    .gray {
+      background-color: #ccc;
+    }
+
+    .yellow {
+      background-color: yellow;
+    }
+
+    .green {
+      background-color: lightgreen;
+    }
+
+    .red {
+      background-color: lightcoral;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container mt-4">
+    <h2>Country Dashboard</h2>
+    <input type="text" id="searchInput" placeholder="Search by Country Name" oninput="searchCountries()">
+    <button class="btn btn-primary" onclick="sortTable()">Sort Population</button>
+    <table id="countriesTable" class="table table-bordered mt-3">
+      <thead>
+        <tr>
+          <th onclick="sortTableByColumn('name.common')">Name</th>
+          <th>Official Name</th>
+          <th onclick="sortTableByColumn('capital')">Capital</th>
+          <th onclick="sortTableByColumn('region')">Region</th>
+          <th onclick="sortTableByColumn('area')">Area</th>
+          <th onclick="sortTableByColumn('population')">Population</th>
+          <th>Flag</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+
+  <!-- Add Bootstrap JS and Popper.js -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+  <script>
+    let countriesData = [];
+
+    // Function to fetch data from the API
+    async function fetchData() {
+      try {
+        const response = await fetch('https://restcountries.com/v3.1/all');
+        const data = await response.json();
+        countriesData = data;
+        displayData();
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+
+    // Function to display data in the table
+    function displayData(filteredData = countriesData) {
+      const tableBody = document.getElementById('tableBody');
+      tableBody.innerHTML = '';
+
+      filteredData.forEach(country => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${country.name.common}</td>
+          <td>${country.name.official}</td>
+          <td>${country.capital}</td>
+          <td>${country.region}</td>
+          <td>${country.area ? country.area.toLocaleString() : ''}</td>
+          <td>${country.population ? country.population.toLocaleString() : ''}</td>
+          <td><img src="${country.flags.png}" alt="Flag" style="width: 30px; height: 20px;"></td>
+        `;
+        setRowColor(row, country.area);
+        tableBody.appendChild(row);
+      });
+    }
+
+    // Function to set row color based on area
+    function setRowColor(row, area) {
+      const areaValue = parseFloat(area);
+      if (areaValue <= 10000) {
+        row.classList.add('gray');
+      } else if (areaValue <= 50000) {
+        row.classList.add('yellow');
+      } else if (areaValue <= 100000) {
+        row.classList.add('green');
+      } else {
+        row.classList.add('red');
+      }
+    }
+
+    // Function to sort the table by column
+    function sortTableByColumn(column) {
+      countriesData.sort((a, b) => {
+        const valueA = a[column];
+        const valueB = b[column];
+        return valueA.localeCompare(valueB);
+      });
+      displayData();
+    }
+
+    // Function to sort the table by population
+    function sortTable() {
+      const button = document.querySelector('.btn-primary');
+      if (button.textContent.includes('ASC')) {
+        countriesData.sort((a, b) => a.population - b.population);
+        button.textContent = 'Sort Population DESC';
+      } else {
+        countriesData.sort((a, b) => b.population - a.population);
+        button.textContent = 'Sort Population ASC';
+      }
+      displayData();
+    }
+
+    // Function to search countries based on input
+    function searchCountries() {
+      const searchInput = document.getElementById('searchInput').value.toLowerCase();
+      const filteredData = countriesData.filter(country =>
+        country.name.common.toLowerCase().includes(searchInput)
+      );
+      displayData(filteredData);
+    }
+
+    // Initial fetch and display
+    fetchData();
+  </script>
+</body>
+</html>

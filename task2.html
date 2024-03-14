@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .gary {
+            background-color: gray;
+        }
+
+        .yellow {
+            background-color: yellow;
+        }
+
+        .red {
+            background-color: red;
+        }
+
+        .green {
+            background-color: green;
+        }
+    </style>
+</head>
+
+<body>
+    <table border="1">
+        <thead>
+            <tr>
+                <td><input type="text" name="" id="searchInput" oninput="filterdata()"></td>
+                <td><Button onclick="sortdata()">Sort</Button></td>
+            </tr>
+            <tr>
+                <th>Name</th>
+                <th>Capital</th>
+                <th>Region</th>
+                <th>Area</th>
+                <th>Population</th>
+                <th>Flag</th>
+            </tr>
+        </thead>
+        <tbody id="ans">
+
+        </tbody>
+    </table>
+
+    <script>
+        let data = [];
+
+
+        function apiCall() {
+            fetch('https://restcountries.com/v3.1/all')
+                .then(res => res.json())
+                .then(res => {
+                    data = res
+                    filterdata();
+                })
+        }
+        apiCall();
+
+        function filterdata() {
+            let tbl = "";
+            const searchInput = document.getElementById('searchInput').value.toLowerCase();
+            data.forEach((val) => {
+                const countryName = val.name.common.toLowerCase();
+                if (countryName.includes(searchInput)) {
+                    let colorClass;
+                    if (val.area <= 10000) {
+                        colorClass = "gray";
+                    } else if (val.area <= 50000) {
+                        colorClass = "yellow";
+                    } else if (val.area <= 100000) {
+                        colorClass = "green";
+
+                    } else {
+                        colorClass = "red";
+                    }
+                    tbl +=
+                        `
+                            <tr>
+                                <td>${val.name.common}</td> 
+                                <td>${val.capital}</td>
+                                <td>${val.region}</td>
+                                <td class="${colorClass}">${val.area}</td>                           
+                                <td>${val.population}</td>
+                                <td><img style="height: 100px; width: 100px; object-fit: cover;" src="${val.flags.png}" /></td>
+                           </tr>
+                        `;
+                }
+            })
+            document.getElementById('ans').innerHTML = tbl;
+        }
+
+        function sortdata() {
+            data.sort((a, b) => {
+                const nameA = a.name.common.toLowerCase();
+                const nameB = b.name.common.toLowerCase();
+                if (nameA < nameB) {
+                    return -1;
+                }
+                if (nameA > nameB) {
+                    return 1;
+                }
+                return 0;
+            });
+
+            filterdata();
+        }
+
+    </script>
+</body>
+
+</html>
